@@ -1,0 +1,27 @@
+{
+  "name": "@zk-census/circuits",
+  "version": "1.0.0",
+  "description": "Zero-knowledge circuits for zk-Census",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "compile": "node scripts/compile-circuits.js",
+    "setup": "node scripts/setup-circuits.js",
+    "test": "mocha tests/**/*.test.js",
+    "build": "tsc",
+    "clean": "rm -rf dist build",
+    "dev": "tsc --watch"
+  },
+  "dependencies": {
+    "@zk-census/types": "workspace:*",
+    "circomlib": "^2.0.5",
+    "snarkjs": "^0.7.3",
+    "ffjavascript": "^0.3.0"
+  },
+  "devDependencies": {
+    "circom_tester": "^0.0.19",
+    "chai": "^4.3.10",
+    "mocha": "^10.2.0",
+    "typescript": "^5.3.3"
+  }
+}
