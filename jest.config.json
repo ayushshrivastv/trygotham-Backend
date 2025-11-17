@@ -1,0 +1,25 @@
+{
+  "preset": "ts-jest",
+  "testEnvironment": "node",
+  "roots": ["<rootDir>/packages"],
+  "testMatch": ["**/__tests__/**/*.test.ts", "**/?(*.)+(spec|test).ts"],
+  "transform": {
+    "^.+\\.ts$": "ts-jest"
+  },
+  "collectCoverageFrom": [
+    "packages/**/src/**/*.ts",
+    "!packages/**/src/**/*.d.ts",
+    "!packages/**/src/index.ts"
+  ],
+  "coverageDirectory": "coverage",
+  "coverageReporters": ["text", "lcov", "html"],
+  "moduleNameMapper": {
+    "^@zk-census/types$": "<rootDir>/packages/types/src",
+    "^@zk-census/api$": "<rootDir>/packages/api/src",
+    "^@zk-census/database$": "<rootDir>/packages/database/src",
+    "^@zk-census/circuits$": "<rootDir>/packages/circuits/src",
+    "^@zk-census/ipfs$": "<rootDir>/packages/ipfs/src"
+  },
+  "setupFilesAfterEnv": ["<rootDir>/jest.setup.ts"],
+  "testTimeout": 30000
+}
