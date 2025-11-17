@@ -1,0 +1,25 @@
+// Configuration settings file format documentation can be found at:
+// https://help.apple.com/xcode/#/dev745c5c974
+
+// App Configuration
+PRODUCT_NAME = zkCensus
+PRODUCT_BUNDLE_IDENTIFIER = com.zkcensus.app
+DEVELOPMENT_TEAM = YOUR_TEAM_ID
+
+// Swift
+SWIFT_VERSION = 5.9
+SWIFT_OPTIMIZATION_LEVEL = -Onone
+
+// iOS Deployment
+IPHONEOS_DEPLOYMENT_TARGET = 16.0
+TARGETED_DEVICE_FAMILY = 1,2
+
+// API Endpoints
+API_BASE_URL = http:/\/localhost:3000
+SOLANA_NETWORK = devnet
+SOLANA_RPC_URL = https:/\/api.devnet.solana.com
+PROGRAM_ID = Fg6PaFpoGXkYsidMpWTK6W2BeZ7FEfcYkg476zPFsLnS
+
+// Build Settings
+ENABLE_BITCODE = NO
+ENABLE_TESTABILITY = YES
