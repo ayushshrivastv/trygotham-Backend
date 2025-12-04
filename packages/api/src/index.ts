@@ -19,7 +19,7 @@ import healthRoutes from './routes/health';
 dotenv.config();
 
 // Create Express app
-const app = express();
+const app: express.Application = express();
 const server = createServer(app);
 
 // Middleware

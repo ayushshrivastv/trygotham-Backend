@@ -1,24 +1,13 @@
-import { Connection, PublicKey, Keypair } from '@solana/web3.js';
-import { AnchorProvider, Program, Wallet } from '@coral-xyz/anchor';
+import { PublicKey } from '@solana/web3.js';
 import { config } from '../config';
 import { CreateCensusConfig, CensusMetadata, CensusNotFoundError } from '@zk-census/types';
 import { logger } from '../config/logger';
-import { db } from '@zk-census/database';
+import { censuses } from '@zk-census/database';
 
 export class CensusService {
-  private connection: Connection;
-  private provider: AnchorProvider;
-  private program: Program;
-
   constructor() {
-    this.connection = new Connection(config.solanaRpcUrl, 'confirmed');
-    // Note: In production, use proper wallet management
-    const wallet = new Wallet(Keypair.generate());
-    this.provider = new AnchorProvider(this.connection, wallet, {
-      commitment: 'confirmed',
-    });
-    // TODO: Load actual program IDL
-    // this.program = new Program(idl, new PublicKey(config.censusProgramId), this.provider);
+    // Note: Solana program integration will be added later
+    // For now, we're using database-only implementation
   }
 
   async createCensus(censusConfig: CreateCensusConfig): Promise<CensusMetadata> {
@@ -39,14 +28,13 @@ export class CensusService {
       //   .rpc();
 
       // Store in database
-      const census = await db.censuses.create({
+      const census = await censuses.create({
         id: censusId,
         name: censusConfig.name,
         description: censusConfig.description,
         enableLocation: censusConfig.enableLocation,
         minAge: censusConfig.minAge || 0,
         active: true,
-        createdAt: new Date(),
       });
 
       logger.info(`Census created successfully: ${censusId}`);
@@ -68,7 +56,7 @@ export class CensusService {
 
   async getCensus(censusId: string): Promise<CensusMetadata> {
     try {
-      const census = await db.censuses.findById(censusId);
+      const census = await censuses.findById(censusId);
 
       if (!census) {
         throw new CensusNotFoundError(censusId);
@@ -92,9 +80,9 @@ export class CensusService {
 
   async getAllCensuses(): Promise<CensusMetadata[]> {
     try {
-      const censuses = await db.censuses.findAll();
+      const allCensuses = await censuses.findAll();
 
-      return censuses.map((census) => ({
+      return allCensuses.map((census) => ({
         id: census.id,
         name: census.name,
         description: census.description,
@@ -117,7 +105,7 @@ export class CensusService {
       // TODO: Call Solana program
       // await this.program.methods.closeCensus().rpc();
 
-      await db.censuses.update(censusId, { active: false });
+      await censuses.update(censusId, { active: false });
 
       logger.info(`Census closed: ${censusId}`);
 
@@ -139,7 +127,7 @@ export class CensusService {
       // TODO: Call Solana program
       // await this.program.methods.updateMerkleRoot(merkleRoot, ipfsHash).rpc();
 
-      await db.censuses.update(censusId, { merkleRoot, ipfsHash });
+      await censuses.update(censusId, { merkleRoot, ipfsHash });
 
       logger.info(`Merkle root updated for census: ${censusId}`);
 

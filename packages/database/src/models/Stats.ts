@@ -67,8 +67,8 @@ export const stats = {
 
     const distribution: { [key: number]: number } = {};
 
-    registrations.forEach((row) => {
-      distribution[row.age_range] = parseInt(row.count as string);
+    registrations.forEach((row: any) => {
+      distribution[row.age_range as number] = parseInt(row.count as string);
     });
 
     return distribution;
@@ -83,8 +83,8 @@ export const stats = {
 
     const distribution: { [key: number]: number } = {};
 
-    registrations.forEach((row) => {
-      distribution[row.continent] = parseInt(row.count as string);
+    registrations.forEach((row: any) => {
+      distribution[row.continent as number] = parseInt(row.count as string);
     });
 
     return distribution;

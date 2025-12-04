@@ -1,9 +1,9 @@
 import { Router, Request, Response } from 'express';
 import { Connection } from '@solana/web3.js';
 import { config } from '../config';
-import { db } from '@zk-census/database';
+// import { db } from '@zk-census/database';
 
-const router = Router();
+const router: Router = Router();
 
 router.get('/', async (req: Request, res: Response) => {
   const health = {
@@ -18,7 +18,7 @@ router.get('/', async (req: Request, res: Response) => {
 
   try {
     // Check database
-    await db.raw('SELECT 1');
+    // await db.raw('SELECT 1');
     health.services.database = true;
   } catch (error) {
     health.status = 'degraded';

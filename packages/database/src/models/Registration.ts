@@ -1,5 +1,5 @@
 import { db } from '../index';
-import { CensusRegistrationRecord, RegistrationStatus } from '@zk-census/types';
+import { RegistrationStatus } from '@zk-census/types';
 
 export interface RegistrationRecord {
   id: string;

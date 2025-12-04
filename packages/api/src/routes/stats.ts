@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { StatsController } from '../controllers/StatsController';
 
-const router = Router();
+const router: Router = Router();
 const controller = new StatsController();
 
 // Get census statistics

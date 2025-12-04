@@ -1,8 +1,4 @@
 import { create, IPFSHTTPClient } from 'ipfs-http-client';
-import all from 'it-all';
-import { concat as uint8ArrayConcat } from 'uint8arrays/concat';
-import { toString as uint8ArrayToString } from 'uint8arrays/to-string';
-import { fromString as uint8ArrayFromString } from 'uint8arrays/from-string';
 import { IPFSError } from '@zk-census/types';
 
 export class IPFSService {
@@ -24,7 +20,7 @@ export class IPFSService {
    */
   async add(data: string | Buffer): Promise<string> {
     try {
-      const content = typeof data === 'string' ? uint8ArrayFromString(data) : data;
+      const content = typeof data === 'string' ? Buffer.from(data) : data;
 
       const result = await this.client.add(content);
       return result.cid.toString();
@@ -56,8 +52,8 @@ export class IPFSService {
         chunks.push(chunk);
       }
 
-      const data = uint8ArrayConcat(chunks);
-      return uint8ArrayToString(data);
+      const data = Buffer.concat(chunks.map(chunk => Buffer.from(chunk)));
+      return data.toString('utf-8');
     } catch (error) {
       throw new IPFSError(`Failed to get data from IPFS: ${error}`);
     }

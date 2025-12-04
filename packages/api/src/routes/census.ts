@@ -2,7 +2,7 @@ import { Router } from 'express';
 import { CensusController } from '../controllers/CensusController';
 import { validateRequest, schemas } from '../middleware/validator';
 
-const router = Router();
+const router: Router = Router();
 const controller = new CensusController();
 
 // Create new census

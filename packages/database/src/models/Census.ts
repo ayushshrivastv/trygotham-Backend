@@ -1,5 +1,4 @@
 import { db } from '../index';
-import { CensusMetadata } from '@zk-census/types';
 
 export interface CensusRecord {
   id: string;

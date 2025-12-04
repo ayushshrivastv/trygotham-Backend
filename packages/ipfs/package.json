@@ -11,7 +11,7 @@
   },
   "dependencies": {
     "@zk-census/types": "workspace:*",
-    "ipfs-http-client": "^60.0.1",
+    "ipfs-http-client": "^56.0.3",
     "it-all": "^3.0.4",
     "uint8arrays": "^5.0.1"
   },

@@ -1,4 +1,4 @@
-import { MerkleNode, MerkleProof, MerkleTreeError } from '@zk-census/types';
+import { MerkleProof, MerkleTreeError } from '@zk-census/types';
 import { IPFSService } from '@zk-census/ipfs';
 import { logger } from '../config/logger';
 import { createHash } from 'crypto';

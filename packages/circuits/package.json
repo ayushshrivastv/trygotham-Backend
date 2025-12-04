@@ -19,6 +19,7 @@
     "ffjavascript": "^0.3.0"
   },
   "devDependencies": {
+    "@types/node": "^20.10.5",
     "circom_tester": "^0.0.19",
     "chai": "^4.3.10",
     "mocha": "^10.2.0",

@@ -42,8 +42,10 @@ COPY --from=builder /app/packages/circuits/dist ./packages/circuits/dist
 COPY --from=builder /app/packages/database/dist ./packages/database/dist
 COPY --from=builder /app/packages/ipfs/dist ./packages/ipfs/dist
 
-# Copy circuit build artifacts (if available)
-COPY --from=builder /app/packages/circuits/build ./packages/circuits/build
+# Create circuit build directory (circuits are compiled separately if needed)
+# The build directory contains compiled Circom circuits, which are optional
+# and can be generated later if needed using: cd packages/circuits && pnpm compile
+RUN mkdir -p ./packages/circuits/build
 
 # Create logs directory
 RUN mkdir -p logs

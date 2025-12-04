@@ -1,4 +1,3 @@
-import { Connection, PublicKey } from '@solana/web3.js';
 import {
   SubmitProofRequest,
   SubmitProofResponse,
@@ -6,20 +5,17 @@ import {
   ProofPublicSignals,
   ProofVerificationError,
   DuplicateNullifierError,
-  TransactionError,
+  RegistrationStatus,
 } from '@zk-census/types';
 import { verifyCensusProof } from '@zk-census/circuits';
-import { config } from '../config';
 import { logger } from '../config/logger';
-import { db } from '@zk-census/database';
+import { registrations, stats } from '@zk-census/database';
 import { MerkleTreeService } from './MerkleTreeService';
 
 export class ProofService {
-  private connection: Connection;
   private merkleTreeService: MerkleTreeService;
 
   constructor() {
-    this.connection = new Connection(config.solanaRpcUrl, 'confirmed');
     this.merkleTreeService = new MerkleTreeService();
   }
 
@@ -27,14 +23,16 @@ export class ProofService {
     try {
       logger.info(`Submitting proof for census: ${request.censusId}`);
 
+      const { proof, publicSignals } = request.proof;
+
       // 1. Verify the zero-knowledge proof
-      const isValid = await this.verifyProof(request.proof, request.publicSignals);
+      const isValid = await this.verifyProof(proof, publicSignals);
       if (!isValid) {
         throw new ProofVerificationError();
       }
 
       // 2. Check for duplicate nullifier
-      const exists = await this.checkNullifier(request.publicSignals.nullifierHash);
+      const exists = await this.checkNullifier(publicSignals.nullifierHash);
       if (exists) {
         throw new DuplicateNullifierError();
       }
@@ -44,24 +42,24 @@ export class ProofService {
       const txSignature = 'mock-tx-signature-' + Date.now();
 
       // 4. Store in database
-      await db.registrations.create({
+      await registrations.create({
         censusId: request.censusId,
-        nullifierHash: request.publicSignals.nullifierHash,
-        ageRange: request.publicSignals.ageRange,
-        continent: request.publicSignals.continent,
-        timestamp: request.publicSignals.timestamp,
+        nullifierHash: publicSignals.nullifierHash,
+        ageRange: publicSignals.ageRange,
+        continent: publicSignals.continent,
+        timestamp: publicSignals.timestamp,
         transactionSignature: txSignature,
-        status: 'verified',
+        status: RegistrationStatus.VERIFIED,
       });
 
       // 5. Update Merkle tree
       await this.merkleTreeService.addNullifier(
         request.censusId,
-        request.publicSignals.nullifierHash
+        publicSignals.nullifierHash
       );
 
       // 6. Get updated stats
-      const stats = await db.stats.getCensusStats(request.censusId);
+      const censusStats = await stats.getCensusStats(request.censusId);
 
       logger.info(
         `Proof submitted successfully for census: ${request.censusId}, tx: ${txSignature}`
@@ -70,7 +68,7 @@ export class ProofService {
       return {
         success: true,
         transactionSignature: txSignature,
-        stats,
+        stats: censusStats,
       };
     } catch (error) {
       logger.error('Error submitting proof:', error);
@@ -95,7 +93,7 @@ export class ProofService {
 
   async checkNullifier(nullifierHash: string): Promise<boolean> {
     try {
-      const registration = await db.registrations.findByNullifier(nullifierHash);
+      const registration = await registrations.findByNullifier(nullifierHash);
       return registration !== null;
     } catch (error) {
       logger.error('Error checking nullifier:', error);
